@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    /* --- Root Variables --- */
+    :root {
+      --bg-color: #0d0d0d;
+      --primary-color: #00f2ea;
+      --secondary-color: #a855f7;
+      --text-color: #e5e5e5;
+      --font-family: "Fira Code", Consolas, "Courier New", Courier, monospace;
+      --glitch-anim-duration: 0.5s;
+    }
+
+    body {
+      width: 420px;
+      padding: 0;
+      font-family: var(--font-family);
+      background-color: #050505;
+      color: var(--text-color);
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    .glitch-form-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: var(--font-family);
+      background-color: #050505;
+    }
+
+    /* --- Card Structure --- */
+    .glitch-card {
+      background-color: var(--bg-color);
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid rgba(0, 242, 234, 0.2);
+      box-shadow:
+        0 0 20px rgba(0, 242, 234, 0.1),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      margin: 1rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 0.5em 1em;
+      border-bottom: 1px solid rgba(0, 242, 234, 0.2);
+    }
+
+    .card-title {
+      color: var(--primary-color);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    .card-title svg {
+      width: 1.2em;
+      height: 1.2em;
+      stroke: var(--primary-color);
+    }
+
+    .card-dots span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #333;
+      margin-left: 5px;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    /* --- Button Styling --- */
+    button {
+      width: 100%;
+      padding: 0.8em;
+      margin-top: 1rem;
+      background-color: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+    }
+
+    button:hover,
+    button:focus {
+      background-color: var(--primary-color);
+      color: var(--bg-color);
+      box-shadow: 0 0 25px var(--primary-color);
+      outline: none;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      background-color: #2a2a2a;
+      color: #666;
+      border-color: #444;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* --- Glitch Effect for Button --- */
+    button .btn-text {
+      position: relative;
+      z-index: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover .btn-text {
+      opacity: 0;
+    }
+
+    button::before,
+    button::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      background-color: var(--primary-color);
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover::before,
+    button:focus::before {
+      opacity: 1;
+      color: var(--secondary-color);
+      animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    }
+
+    button:hover::after,
+    button:focus::after {
+      opacity: 1;
+      color: var(--bg-color);
+      animation: glitch-anim var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+    }
+
+    @keyframes glitch-anim {
+      0% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+
+      20% {
+        transform: translate(-5px, 3px);
+        clip-path: inset(50% 0 20% 0);
+      }
+
+      40% {
+        transform: translate(3px, -2px);
+        clip-path: inset(20% 0 60% 0);
+      }
+
+      60% {
+        transform: translate(-4px, 2px);
+        clip-path: inset(80% 0 5% 0);
+      }
+
+      80% {
+        transform: translate(4px, -3px);
+        clip-path: inset(30% 0 45% 0);
+      }
+
+      100% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+    /* --- Debug Panel --- */
+    .debug-panel {
+      display: none;
+      margin: 20px 0;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 242, 234, 0.2);
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .debug-panel h4 {
+      color: var(--primary-color);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.6em;
+      font-size: 0.8rem;
+      margin: 0;
+      background-color: transparent;
+      color: var(--secondary-color);
+      border: 1px solid var(--secondary-color);
+    }
+
+    .tab-btn.active {
+      background-color: var(--secondary-color);
+      color: var(--bg-color);
+    }
+
+    /* --- Format Selector --- */
+    .format-selector {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 242, 234, 0.2);
+      display: none;
+    }
+
+    .format-selector strong {
+      color: var(--primary-color);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .format-selector label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      padding: 8px;
+      border: 1px solid transparent;
+    }
+
+    .format-selector label:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .format-selector input[type="radio"] {
+      margin: 0;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--primary-color);
+      background: transparent;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .format-selector input[type="radio"]:checked {
+      border-color: var(--secondary-color);
+    }
+
+    .format-selector input[type="radio"]:checked::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: var(--secondary-color);
+    }
+
+    /* --- Status Messages --- */
+    .status {
+      margin: 20px 0;
+      padding: 15px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      border: 1px solid;
+    }
+
+    .success {
+      background-color: rgba(0, 255, 0, 0.1);
+      color: #00ff00;
+      border-color: #00ff00;
+    }
+
+    .error {
+      background-color: rgba(255, 0, 0, 0.1);
+      color: #ff0000;
+      border-color: #ff0000;
+    }
+
+    .info {
+      background-color: rgba(0, 242, 234, 0.1);
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .warning {
+      background-color: rgba(255, 255, 0, 0.1);
+      color: #ffff00;
+      border-color: #ffff00;
+    }
+
+    /* --- Progress Bar --- */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--primary-color);
+      overflow: hidden;
+      margin: 15px 0;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary-color);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* --- Node List --- */
+    .node-list {
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1px solid var(--primary-color);
+      margin: 15px 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .node-item {
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(0, 242, 234, 0.3);
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    .node-item:hover {
+      background: rgba(0, 242, 234, 0.1);
+      color: var(--primary-color);
+    }
+
+    .node-item.selected {
+      background: rgba(168, 85, 247, 0.2);
+      border-left: 4px solid var(--secondary-color);
+      color: var(--secondary-color);
+    }
+
+    /* --- HTML Content --- */
+    .html-content {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border: 1px solid var(--primary-color);
+      font-family: inherit;
+      font-size: 0.8rem;
+      max-height: 220px;
+      overflow-y: auto;
+      margin: 15px 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: var(--text-color);
+    }
+
+    /* --- Preview --- */
+    .preview {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 20px;
+      border: 1px solid var(--primary-color);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .preview h4 {
+      margin: 0;
+      padding: 15px 20px;
+      background: rgba(0, 242, 234, 0.1);
+      border-bottom: 1px solid var(--primary-color);
+      font-size: 0.9rem;
+      color: var(--primary-color);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .tree-view {
+      font-family: inherit;
+      font-size: 0.8rem;
+      padding: 20px;
+      line-height: 1.8;
+      color: var(--text-color);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .stats {
+      font-size: 0.8rem;
+      color: var(--secondary-color);
+      padding: 15px 20px;
+      background: rgba(168, 85, 247, 0.1);
+      border-top: 1px solid var(--secondary-color);
+    }
+
+    .stats div {
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* --- Level Info --- */
+    .level-info {
+      background: rgba(0, 242, 234, 0.1);
+      padding: 15px;
+      margin: 15px 0;
+      border: 1px solid var(--primary-color);
+      border-left: 4px solid var(--secondary-color);
+      font-size: 0.8rem;
+      color: var(--text-color);
+    }
+
+    /* --- Accessibility --- */
+    @media (prefers-reduced-motion: reduce) {
+
+      button:hover::before,
+      button:focus::before,
+      button:hover::after,
+      button:focus::after {
+        animation: none;
+        opacity: 0;
+      }
+
+      button:hover .btn-text {
+        opacity: 1;
+      }
+    }
+
+    #debugCorrectedBtn {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glitch-form-wrapper">
+    <div class="glitch-card">
+      <div class="card-header">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+          心智圖導出器 v5.3.0
+        </div>
+        <div class="card-dots">
+          <span style="background-color: #ff5f56;"></span>
+          <span style="background-color: #ffbd2e;"></span>
+          <span style="background-color: #27ca3f;"></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <button id="detectCorrectedBtn" data-text="檢測心智圖">
+          <span class="btn-text">🧪 檢測心智圖</span>
+        </button>
+
+        <button id="debugCorrectedBtn" data-text="調試模式">
+          <span class="btn-text">🛠️ 調試模式</span>
+        </button>
+
+        <div class="debug-panel" id="debugPanel">
+          <h4>🔧 調試模式</h4>
+
+          <div class="tab-buttons">
+            <button class="tab-btn active" id="nodesTab">
+              📊 層級分析
+            </button>
+            <button class="tab-btn" id="htmlTab">📄 完整HTML</button>
+          </div>
+
+          <div id="nodesContent">
+            <p><strong>所有檢測到的節點 (點擊選擇根節點):</strong></p>
+            <div class="level-info" id="levelInfo">
+              <!-- Level information will be populated here -->
+            </div>
+            <div class="node-list" id="nodeList">
+              <!-- Nodes will be populated here -->
+            </div>
+            <button id="useSelectedBtn" data-text="使用修復邏輯提取" disabled>
+              <span class="btn-text">✅ 使用修復邏輯提取</span>
+            </button>
+          </div>
+
+          <div id="htmlContent" style="display: none">
+            <p><strong>完整HTML (包含隱藏元素):</strong></p>
+            <div class="html-content" id="htmlDisplay">
+              <!-- HTML content will be shown here -->
+            </div>
+            <button id="downloadHtmlBtn" data-text="下載完整HTML">
+              <span class="btn-text">💾 下載完整HTML</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="format-selector" id="formatSelector">
+          <strong>導出格式:</strong>
+          <label>
+            <input type="radio" name="format" value="mm" checked />
+            <span>FreeMind (.mm) - 推薦</span>
+          </label>
+          <label>
+            <input type="radio" name="format" value="xml" />
+            <span>通用 XML (.xml)</span>
+          </label>
+          <label>
+            <input type="radio" name="format" value="opml" />
+            <span>OPML (.opml)</span>
+          </label>
+        </div>
+
+        <button id="convertBtn" data-text="導出心智圖" disabled>
+          <span class="btn-text">💾 導出心智圖</span>
+        </button>
+
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div id="status"></div>
+        <div id="preview" class="preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

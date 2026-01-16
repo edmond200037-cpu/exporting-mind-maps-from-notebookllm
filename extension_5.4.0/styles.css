@@ -1,0 +1,49 @@
+/* Clean Glitch Style Button */
+.mindmap-export-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+
+  background-color: #0d0d0d;
+  color: #00f2ea;
+  border: 1px solid rgba(0, 242, 234, 0.2);
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: "Fira Code", Consolas, "Courier New", Courier, monospace;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  
+  box-shadow: 
+    0 0 20px rgba(0, 242, 234, 0.1),
+    inset 0 0 10px rgba(0, 0, 0, 0.5);
+
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mindmap-export-button:hover {
+  background-color: #00f2ea;
+  color: #0d0d0d;
+  box-shadow: 0 0 25px #00f2ea;
+}
+
+.mindmap-export-button:focus {
+  outline: none;
+}
+
+.mindmap-export-button:active {
+  transform: scale(0.97);
+}
+
+.mindmap-export-button:disabled {
+  background-color: #2a2a2a;
+  color: #666;
+  border-color: #444;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
